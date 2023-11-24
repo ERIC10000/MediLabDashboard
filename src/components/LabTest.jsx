@@ -29,6 +29,13 @@ const LabTest = () => {
     const[error,setError] = useState(null)
 
 
+    // search useState
+    const [query, setQuery] = useState('')
+
+    // filtred Labtest Hook
+    const [filteredLabTests, setFilteredLabTests] = useState(null);
+
+
     // Post Http using the axio Instance
     // Payload/Request: lab_id
     // Response: Array of Lab Tests Objects -> lab_tests
@@ -40,6 +47,7 @@ const LabTest = () => {
         .then(function(response){
             setLabTests(response.data)
             setLoading(false)
+            setFilteredLabTests(response.data)
             console.log(response.data) // Log the response.data directly
             console.log(lab_id)
         })
@@ -51,6 +59,17 @@ const LabTest = () => {
         })
         
     }, [lab_id])
+
+    
+
+    const handleLiveSearch = (targetValue) => {
+        setQuery(targetValue)
+        
+        const filtered = lab_tests && lab_tests.filter((test) =>  
+        test.test_name.toLowerCase().includes(targetValue.toLowerCase()));
+
+        setFilteredLabTests(filtered)
+    }
     
     // useEffect(() =>{
     //     instance.post("/view_lab_test", {
@@ -81,6 +100,10 @@ const LabTest = () => {
                 <div className="card shadow mb-4 mx-3">
                     <div className="card-header py-3">
                         <h6 className="m-0 font-weight-bold text-primary text-start">Laboratory Tests</h6>
+                        <div className="input-group">
+                            <input type="text" className="form-control bg-info border-0 smaall mt-3" placeholder="Search Lab Tets" value={query} onChange={(event) => handleLiveSearch(event.target.value)}/>
+
+                        </div>
                     </div>
 
                     <div className="card-body">
@@ -100,7 +123,7 @@ const LabTest = () => {
 
 
                                 <tbody>
-                                    {lab_tests && lab_tests.map((lab_test) => 
+                                    {filteredLabTests && filteredLabTests.map((lab_test) => 
 
                                         <tr>
                                             <td>{lab_test.test_name}</td>
@@ -113,7 +136,6 @@ const LabTest = () => {
                                         </tr>
                                     )}
                                     
-
                                 </tbody>
 
                             </table>
@@ -128,3 +150,65 @@ const LabTest = () => {
 }
  
 export default LabTest;
+
+
+// View All the Nurses
+// Endpoint: /-
+// Payload: lab_id
+
+
+// content
+
+// {
+//     "email": "lucy@gmail.com",
+//     "lab_id": 5,
+//     "nurse_id": 1,
+//     "password": "$2b$12$6B3mBEbhLMoJes9sTjaLu.FXg0sxawzrpqwtEOi8SIjZLWFNefmIG",
+//     "phone": "+254768016847",
+//     "reg_date": "Thu, 03 Aug 2023 05:27:35 GMT",
+//     "username": "lucy"
+// },
+
+
+// Bookings
+// payload/request: lab_id
+// EndPoint: 
+
+// JSONArray
+//view bookings
+// "lab_id":"1"
+ 
+
+// /view_bookings
+ 
+
+ 
+
+    
+//         "lab_id": 1,
+//         "latitude": "1.456789",
+//         "longitude": "32.3456789o",
+//         "member_id": 3,
+//         "status": 0,
+//         "test_id": 1,
+//         "where_taken": "Home"
+
+
+// "appointment_date": "2023-01-08",
+//         "appointment_time": "10:00:00",
+//         "book_id": 1,
+//         "booked_for": "Dependant",
+//         "dependant_id": 1,
+//         "invoice_no": "5454545",
+//         "key": {
+//             "dob": "2000-06-08",
+//             "email": "jennifer@gmail.com",
+//             "gender": "female",
+//             "location_id": 4,
+//             "member_id": 3,
+//             "others": "clerkson",
+//             "password": "$2b$12$6KEgj9z00j8EOUjE.QESieWH6WIWGMfX8mulfX/88x0mFwzH/xL6.",
+//             "phone": "+254768016847",
+//             "reg-date": "2023-07-26 13:30:15",
+//             "status": 1,
+//             "surname": "jennifer"
