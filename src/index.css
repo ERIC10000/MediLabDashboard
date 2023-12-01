@@ -1,3 +1,28 @@
 .modcom {
   background-color: brown;
 }
+
+/* Add these styles to your CSS file */
+.modal {
+  &-enter {
+    opacity: 0;
+  }
+  &-enter-active {
+    opacity: 1;
+    transition: opacity 300ms ease-in-out;
+  }
+  &-exit {
+    opacity: 1;
+  }
+  &-exit-active {
+    opacity: 0;
+    transition: opacity 300ms ease-in-out;
+  }
+}
+
+/* Additional styles for modal content */
+.modal-content {
+  background-color: aqua;
+  border-radius: 15px;
+  padding: 20px;
+}

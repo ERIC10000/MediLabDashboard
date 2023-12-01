@@ -12,7 +12,7 @@ const SideBar = () => {
     display: flex;
     flex-direction: column;
     position: fixed;
-    width: 25vw;
+    width: 18vw;
     left: 0;
     height: 100%;
     overflow: auto;

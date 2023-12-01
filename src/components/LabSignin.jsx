@@ -58,7 +58,8 @@ const LabSignin = () => {
 
         })
         .catch(function(error){
-            // handle error
+            setError(error.message)
+            setLoading(false)
             
         });
 

@@ -3,7 +3,7 @@ import styled from 'styled-components'
 const Main = styled.section`
         display: flex;
         flex-direction: column;
-        margin-left: 25vw;
+        margin-left: 18vw;
         position: relative; 
         top: 12vh;
     `

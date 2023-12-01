@@ -7,10 +7,10 @@ const TopBar = () => {
     const lab_name = localStorage.getItem("lab_name")
 
     const Top = styled.section`
-        background-color: grey;
+        background-color: aqua;
         display: flex;
         flex-direction: row;
-        width: 75vw;
+        width: 81vw;
         position: fixed;
         justify-content: space-between;
         right: 0;
@@ -22,7 +22,7 @@ const TopBar = () => {
         }
     `
     return (  
-        <Top>
+        <Top className='sticky-top'>
                 <div>
                     <form action="">
                     <input type="text" className='form-control'
@@ -30,7 +30,7 @@ const TopBar = () => {
                     </form>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-primary">
+                    <button type="button" class="btn btn-warning">
                         Bookings <span class="badge bg-light text-dark">6</span>
                     </button>
                 </div>

@@ -4,6 +4,8 @@ import Main from "../styles/Main";
 import CheckSession from "../helpers/CheckSession";
 import { useEffect,useState } from "react"
 import axiosInstance from "../helpers/axiosInstance";
+import NursesDialog from "./NursesDialog";
+import DeleteBooking from "./DeleteBooking";
 
 const Bookings = () => {
         //check session:are you a valid user
@@ -11,7 +13,7 @@ const Bookings = () => {
 
         //set the useState hooks
    
-        const[bookings,setBookings]= useState([]);
+        const[bookings,setBookings]= useState(null);
         //nb:lab_tests is a jason array
         //content of a lab test->JSONObject
         const[appointment_time,setAppintmentTime] = useState(null)
@@ -30,7 +32,18 @@ const Bookings = () => {
          //search usestate
       const[query,setQuery] = useState('')
       //filterd nurses hook
-      const[filteredBookings,setFilteredBookings] = useState([]);
+      const[filteredBookings,setFilteredBookings] = useState(null);
+
+
+
+      const [show, setShow] = useState(false)
+      const [invoice_no, setInvoice] = useState(null)
+
+      // Delete Dialog Hooks
+      const [showDelete, setshowDelete] = useState(false);
+      const [book_id, setBook_id] = useState(null);
+      
+
    
         //post HTTP using an axios Instance
         //payload should contain the lab_id
@@ -44,10 +57,17 @@ const Bookings = () => {
                 lab_id: lab_id
             })
             .then(function(response) {
-                setBookings(response.data);
-                setFilteredBookings(response.data)
+                if (Array.isArray(response.data)) {
+                    setBookings(response.data);
+                    setFilteredBookings(response.data);
+                } else {
+                    // Handle the case where response.data is not an array
+                    // For instance, log an error or set a default value for filteredBookings
+                    console.error("Data received is not an array:", response.data);
+                    setFilteredBookings([]);
+                }
                 setLoading(false);
-                console.log(response.data);  // Log the updated state directly from the response
+                console.log(response.data);
                 console.log(lab_id);
             })
             .catch(function(error) {
@@ -55,8 +75,12 @@ const Bookings = () => {
                 setLoading(false);
                 console.log(error.message);
                 console.log(lab_id);
+                setFilteredBookings([]);
+                alert(error.message)
             });
         }, [lab_id]);
+
+        
 
         const handleLiveSearch= (targetValue) => {
             setQuery(targetValue)
@@ -67,6 +91,11 @@ const Bookings = () => {
             setFilteredBookings(filtered)
            
    
+        }
+
+        const handleOpenMap = (latitude, longitude) =>{
+            const mapUrl = `https://www.google.com/maps?q=${latitude}, ${longitude}&z=21`
+            window.open(mapUrl, '_blank')
         }
 
 
@@ -96,6 +125,8 @@ const Bookings = () => {
                                             <th>Where Taken</th>
                                             <th> Inoice Number</th>
                                             <th>Status </th>
+                                            <th>Location</th>
+                                            <th>Delete</th>
                                 
                                         </tr>
    
@@ -111,18 +142,41 @@ const Bookings = () => {
                                                 <td>{booking.where_taken}</td>
 
                                                 <td>{booking.invoice_no}</td>
-                                                {/* <td>{ booking.status === true ? (
-                                                    <td><span className="badge bg-success">Allocated</span></td>
-                                                ) : booking.status === false (
-                                                    <td><span className="badge bg-warning">Assign</span></td>
-                                                )
-                                                    }</td> */}
-                                                
-                                               
-                                               
-                                               
-                                               
-                                             
+
+                                                <td>
+
+                                                {booking.status === 'Pending' ? (
+                                                    <td> 
+                                                        <button onClick={() => {
+                                                            setShow(true)
+                                                            setInvoice(booking.invoice_no)
+                                                        }} className="btn btn-warning btn-sm">Assign</button> <br />
+                                                        <button className="btn btn-danger btn-sm">Deline</button> 
+                                                    
+                                                    </td> 
+                                                    
+                                                ) : booking.status === 'Allocated' ? (
+                                                    <td> <button className="btn btn-success btn-sm">Allocated</button> </td>
+                                                ) : booking.status === 'Done' ? (
+                                                    <td> <button className="btn btn-dark btn-sm">Done</button> </td>
+                                                ): (
+                                                    <td> <button className="btn btn-dark btn-sm">--NaN--</button> </td>
+                                                )}
+                                                </td>
+
+
+
+                                                <td>{booking.latitude === '' ?( <td></td>): (
+                                                    <td> <button onClick={() => handleOpenMap(booking.latitude, booking.longitude)} className="btn btn-primary btn-sm">Open Map</button> </td>
+                                                )   }</td>
+
+                                                <td><button onClick={() => {
+                                                    setshowDelete(true)
+                                                    setBook_id(booking.book_id)
+                                                }} className="btn btn-danger btn-sm">Delete</button></td>
+
+
+    
                                          </tr>
                                         )}
                                        
@@ -130,6 +184,11 @@ const Bookings = () => {
                                     </tbody>
    
                                 </table>
+                                <NursesDialog isOpen={show} onClose={()=> setShow(false)} invoice_no={invoice_no}/>
+                                <DeleteBooking isOpen={showDelete} onClose={()=> setshowDelete(false)} book_id={book_id}/>
+
+
+
                             </div>
                         </div>
    
@@ -143,3 +202,4 @@ const Bookings = () => {
 }
  
 export default Bookings;
+
